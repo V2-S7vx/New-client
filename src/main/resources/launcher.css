@@ -2,71 +2,118 @@
     -fx-background-color: transparent;
     -fx-font-family: "Segoe UI", "Inter", sans-serif;
 }
-.logo {
+
+.logo, .brand-small {
     -fx-text-fill: white;
-    -fx-font-size: 28px;
     -fx-font-weight: 900;
-    -fx-letter-spacing: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(90,150,255,0.28), 22, 0.25, 0, 3);
 }
+
+.logo {
+    -fx-font-size: 34px;
+    -fx-letter-spacing: 8px;
+}
+
 .brand-small {
-    -fx-text-fill: rgba(255,255,255,0.9);
     -fx-font-size: 20px;
-    -fx-font-weight: 900;
-    -fx-letter-spacing: 3px;
+    -fx-letter-spacing: 6px;
+    -fx-opacity: 0.72;
 }
+
 .title {
     -fx-text-fill: white;
     -fx-font-size: 42px;
     -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.12), 18, 0.25, 0, 2);
 }
+
 .subtitle {
-    -fx-text-fill: rgba(245,248,255,0.58);
+    -fx-text-fill: rgba(235, 240, 255, 0.70);
     -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }
+
 .login-content {
-    -fx-padding: 30px;
+    -fx-padding: 42px 58px;
+    -fx-background-color: rgba(5, 8, 15, 0.72);
+    -fx-background-radius: 28px;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 1px;
+    -fx-border-radius: 28px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 42, 0.20, 0, 16);
 }
+
 .primary-button, .play-button {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 10px;
-    -fx-text-fill: #080a0f;
-    -fx-font-weight: 850;
+    -fx-background-color: linear-gradient(to bottom, #4b91ff, #246ce8);
+    -fx-background-radius: 13px;
+    -fx-border-color: rgba(255,255,255,0.18);
+    -fx-border-width: 1px;
+    -fx-border-radius: 13px;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
     -fx-font-size: 13px;
     -fx-cursor: hand;
-    -fx-border-color: rgba(255,255,255,0.18);
-    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(45,120,255,0.30), 22, 0.30, 0, 7);
 }
+
 .primary-button {
-    -fx-padding: 16px 30px;
+    -fx-padding: 17px 34px;
+    -fx-min-width: 330px;
 }
+
 .primary-button:hover, .play-button:hover {
-    -fx-background-color: #e9edf4;
+    -fx-background-color: linear-gradient(to bottom, #64a1ff, #327cf0);
+    -fx-effect: dropshadow(gaussian, rgba(55,135,255,0.50), 28, 0.34, 0, 8);
+    -fx-translate-y: -1px;
 }
+
 .primary-button:pressed, .play-button:pressed {
-    -fx-background-color: #dce2eb;
+    -fx-translate-y: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(45,120,255,0.20), 12, 0.25, 0, 3);
 }
+
+.primary-button.loading {
+    -fx-opacity: 0.62;
+}
+
 .play-button {
-    -fx-padding: 17px 110px;
+    -fx-padding: 17px 100px;
     -fx-font-size: 15px;
-    -fx-background-radius: 10px;
+    -fx-background-radius: 13px;
 }
+
 .note, .version {
-    -fx-text-fill: rgba(235,240,255,0.32);
+    -fx-text-fill: rgba(235,240,255,0.38);
     -fx-font-size: 11px;
 }
+
+.quote {
+    -fx-text-fill: rgba(255,255,255,0.48);
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-letter-spacing: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(80,140,255,0.20), 14, 0.25, 0, 2);
+}
+
 .profile-name {
     -fx-text-fill: white;
-    -fx-font-size: 22px;
-    -fx-font-weight: 800;
+    -fx-font-size: 20px;
+    -fx-font-weight: 850;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.10), 14, 0.25, 0, 2);
 }
-.profile-subtitle {
-    -fx-text-fill: rgba(235,240,255,0.42);
-    -fx-font-size: 12px;
-}
-.version-pill {
-    -fx-text-fill: rgba(235,240,255,0.48);
-    -fx-background-color: rgba(255,255,255,0.055);
-    -fx-background-radius: 18px;
-    -fx-padding: 8px 12px;
+
+.profile-subtitle, .version-pill {
+    -fx-text-fill: rgba(235,240,255,0.46);
     -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+.version-pill {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 8px 12px;
 }
