@@ -42,6 +42,12 @@ jlink {
         appVersion = '0.1.0'
         vendor = 'mapz'
         description = 'The _mapz Minecraft launcher'
+        installerOptions = [
+            '--win-menu',
+            '--win-menu-group', 'mapz',
+            '--win-shortcut',
+            '--win-shortcut-prompt'
+        ]
     }
 }
 
