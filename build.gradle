@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.beryx.jlink' version '3.1.1'
 }
 
 group = 'dev.mapz'
@@ -18,7 +19,30 @@ javafx {
 }
 
 application {
+    mainModule = 'dev.mapz.launcher'
     mainClass = 'dev.mapz.launcher.LauncherApp'
+}
+
+jlink {
+    options = [
+        '--strip-debug',
+        '--compress', '2',
+        '--no-header-files',
+        '--no-man-pages'
+    ]
+
+    launcher {
+        name = 'mapz-launcher'
+    }
+
+    jpackage {
+        imageName = 'mapz-launcher'
+        installerName = 'mapz-launcher'
+        installerType = 'exe'
+        appVersion = '0.1.0'
+        vendor = 'mapz'
+        description = 'The _mapz Minecraft launcher'
+    }
 }
 
 jar {
