@@ -20,7 +20,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -34,7 +33,6 @@ public final class LauncherApp extends Application {
     private static final double DESIGN_HEIGHT = 900;
     private static final String DEV_USERNAME = "_mapz";
     private static final String DEV_SKIN_URL = "https://mc-heads.net/skin/_mapz";
-    private static final String PIXEL_FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/pressstart2p/PressStart2P-Regular.ttf";
     private static final String[] QUOTES = {
             "SPACE CLIENT #1", "Your Minecraft. Your space.", "Ready for launch?",
             "Made for a cleaner way to play.", "Welcome aboard, Minecraft player."
@@ -49,7 +47,6 @@ public final class LauncherApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        loadPixelFont();
         launcherStage = stage;
         stage.initStyle(StageStyle.DECORATED);
         stage.setTitle("Space Client");
@@ -93,16 +90,6 @@ public final class LauncherApp extends Application {
 
         FadeTransition intro = new FadeTransition(Duration.millis(750), shell);
         intro.setFromValue(0); intro.setToValue(1); intro.play();
-    }
-
-    private void loadPixelFont() {
-        try {
-            Thread.startVirtualThread(() -> {
-                try {
-                    Font.loadFont(PIXEL_FONT_URL, 16);
-                } catch (Exception ignored) { }
-            });
-        } catch (Exception ignored) { }
     }
 
     private HBox buildTopBar() {
