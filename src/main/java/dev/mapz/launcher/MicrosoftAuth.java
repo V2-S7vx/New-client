@@ -14,11 +14,11 @@ import java.util.regex.Pattern;
 /**
  * Microsoft -> Xbox Live -> XSTS -> Minecraft Services authentication.
  *
- * Set MAPZ_MICROSOFT_CLIENT_ID to a Microsoft public-client application ID
- * that is approved for the XboxLive.signin scope before shipping the launcher.
+ * The client ID is public configuration, not a secret. An environment override
+ * is supported so Space Launcher can move to its own approved Microsoft app ID.
  */
 final class MicrosoftAuth {
-    private static final String CLIENT_ID = System.getenv().getOrDefault("MAPZ_MICROSOFT_CLIENT_ID", "");
+    private static final String CLIENT_ID = System.getenv().getOrDefault("MAPZ_MICROSOFT_CLIENT_ID", "00000000402b5328");
     private static final String DEVICE_ENDPOINT = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
     private static final String TOKEN_ENDPOINT = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
     private static final String XBL_ENDPOINT = "https://user.auth.xboxlive.com/user/authenticate";
@@ -39,10 +39,6 @@ final class MicrosoftAuth {
     void signIn(Listener listener) {
         Thread.startVirtualThread(() -> {
             try {
-                if (CLIENT_ID.isBlank()) {
-                    throw new IOException("Microsoft sign-in is not configured yet. Set MAPZ_MICROSOFT_CLIENT_ID to your approved Microsoft public-client ID.");
-                }
-
                 DeviceCode device = requestDeviceCode();
                 listener.onDeviceCode(device.message, device.verificationUri);
                 String microsoftToken = pollForToken(device);
