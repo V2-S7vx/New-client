@@ -26,6 +26,8 @@ import java.util.Random;
 public final class LauncherApp extends Application {
     private static final double DESIGN_WIDTH = 1440;
     private static final double DESIGN_HEIGHT = 900;
+    private static final String DEV_USERNAME = "_mapz.2";
+    private static final String DEV_SKIN_URL = "https://minotar.net/skin/_mapz.2";
     private static final String[] QUOTES = {
             "SPACE CLIENT #1",
             "Did you know? SPACE CLIENT is built for Minecraft.",
@@ -98,13 +100,23 @@ public final class LauncherApp extends Application {
         signIn.getStyleClass().add("primary-button");
         signIn.setOnAction(e -> beginMicrosoftSignIn(signIn));
 
+        Button devSkip = new Button("DEV SKIP");
+        devSkip.getStyleClass().add("dev-button");
+        devSkip.setOnAction(e -> showLauncher(root, new MicrosoftAuth.MinecraftProfile(
+                DEV_USERNAME,
+                "dev-profile",
+                DEV_SKIN_URL,
+                "CLASSIC",
+                ""
+        )));
+
         Label hint = new Label("Secure Microsoft authentication • Minecraft profile loaded after sign-in");
         hint.getStyleClass().add("note");
         hint.setWrapText(true);
         hint.setMaxWidth(560);
         hint.setAlignment(Pos.CENTER);
 
-        VBox content = new VBox(18, logo, title, loginStatus, signIn, hint);
+        VBox content = new VBox(14, logo, title, loginStatus, signIn, devSkip, hint);
         content.setAlignment(Pos.CENTER);
         content.getStyleClass().add("login-content");
         content.setMaxWidth(680);
