@@ -35,6 +35,6 @@ jobs:
       - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
         with:
-          name: mapz-launcher-windows
+          name: space-launcher-windows
           path: build/jpackage/*.exe
           if-no-files-found: error
