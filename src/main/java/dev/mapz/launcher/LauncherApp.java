@@ -27,8 +27,8 @@ import java.util.Random;
 public final class LauncherApp extends Application {
     private static final double DESIGN_WIDTH = 1440;
     private static final double DESIGN_HEIGHT = 900;
-    private static final String DEV_USERNAME = "_mapz.2";
-    private static final String DEV_SKIN_URL = "https://mc-heads.net/skin/_mapz.2";
+    private static final String DEV_USERNAME = "_mapz";
+    private static final String DEV_SKIN_URL = "https://mc-heads.net/skin/_mapz";
     private static final String[] QUOTES = {
             "SPACE CLIENT #1",
             "Did you know? SPACE CLIENT is built for Minecraft.",
@@ -117,7 +117,6 @@ public final class LauncherApp extends Application {
 
         VBox content = new VBox(16, logo, title, loginStatus, signIn, devSkip, hint);
         content.setAlignment(Pos.CENTER);
-        content.getStyleClass().add("login-content");
         content.setMaxWidth(680);
 
         StackPane center = new StackPane(content);
@@ -142,12 +141,12 @@ public final class LauncherApp extends Application {
     }
 
     private void setupSmoothHover(Button button, double scale) {
-        button.setOnMouseEntered(e -> animateButton(button, scale, 1.0));
-        button.setOnMouseExited(e -> animateButton(button, 1.0, 0.0));
+        button.setOnMouseEntered(e -> animateButton(button, scale));
+        button.setOnMouseExited(e -> animateButton(button, 1.0));
     }
 
-    private void animateButton(Button button, double scale, double ignored) {
-        ScaleTransition transition = new ScaleTransition(Duration.millis(260), button);
+    private void animateButton(Button button, double scale) {
+        ScaleTransition transition = new ScaleTransition(Duration.millis(320), button);
         transition.setToX(scale);
         transition.setToY(scale);
         transition.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
@@ -191,7 +190,6 @@ public final class LauncherApp extends Application {
     }
 
     private void showLauncher(StackPane root, MicrosoftAuth.MinecraftProfile profile) {
-        // Keep only the animated starfield. The login screen must be completely replaced.
         root.getChildren().clear();
         root.getChildren().add(starfield);
 
@@ -205,7 +203,7 @@ public final class LauncherApp extends Application {
 
         Label name = new Label(profile.name());
         name.getStyleClass().add("profile-name");
-        Label account = new Label("MICROSOFT ACCOUNT  •  MINECRAFT: JAVA EDITION");
+        Label account = new Label("MINECRAFT: JAVA EDITION");
         account.getStyleClass().add("profile-subtitle");
 
         VBox profileBox = new VBox(0, skin, name, account);
