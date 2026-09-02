@@ -19,83 +19,81 @@ final class SkinRenderer extends Canvas {
     SkinRenderer() {
         setWidth(300);
         setHeight(330);
-        widthProperty().addListener((obs, oldV, newV) -> draw());
-        heightProperty().addListener((obs, oldV, newV) -> draw());
-        drawPlaceholder();
+        widthProperty().addListener((obs,o,n)->draw());
+        heightProperty().addListener((obs,o,n)->draw());
+        draw();
     }
 
     void load(String url, boolean slim) {
-        this.slim = slim;
-        if (url == null || url.isBlank()) { drawPlaceholder(); return; }
-        Thread.startVirtualThread(() -> {
-            try {
-                HttpRequest request = HttpRequest.newBuilder(URI.create(url))
-                        .timeout(java.time.Duration.ofSeconds(12)).GET().build();
-                HttpResponse<byte[]> response = HttpClient.newHttpClient()
-                        .send(request, HttpResponse.BodyHandlers.ofByteArray());
-                if (response.statusCode() == 200) {
-                    Image loaded = new Image(new ByteArrayInputStream(response.body()));
-                    PlatformBridge.run(() -> { skin = loaded; draw(); });
-                } else PlatformBridge.run(this::drawPlaceholder);
-            } catch (Exception ignored) { PlatformBridge.run(this::drawPlaceholder); }
+        this.slim=slim;
+        if(url==null||url.isBlank()){draw();return;}
+        Thread.startVirtualThread(()->{
+            try{
+                HttpRequest request=HttpRequest.newBuilder(URI.create(url)).timeout(java.time.Duration.ofSeconds(12)).GET().build();
+                HttpResponse<byte[]> response=HttpClient.newHttpClient().send(request,HttpResponse.BodyHandlers.ofByteArray());
+                if(response.statusCode()==200){
+                    Image loaded=new Image(new ByteArrayInputStream(response.body()));
+                    javafx.application.Platform.runLater(()->{skin=loaded;draw();});
+                }
+            }catch(Exception ignored){}
         });
     }
 
-    private void drawPlaceholder() { skin = null; draw(); }
+    private void draw(){
+        double W=getWidth(),H=getHeight(); if(W<=0||H<=0)return;
+        GraphicsContext g=getGraphicsContext2D(); g.clearRect(0,0,W,H); g.setImageSmoothing(false);
+        if(skin==null){drawPlaceholder(g,W,H);return;}
 
-    private void draw() {
-        double w=getWidth(), h=getHeight(); if(w<=0||h<=0)return;
-        GraphicsContext g=getGraphicsContext2D(); g.clearRect(0,0,w,h); g.setImageSmoothing(false);
-        g.setFill(Color.rgb(0,0,0,0.34)); g.fillOval(w*.22,h*.875,w*.56,h*.045);
-        if(skin==null){ drawPlaceholderModel(g,w,h); return; }
-
-        // Pixel-perfect Minecraft skin faces arranged as a compact three-quarter model.
-        double u=Math.min(w/52.0,h/62.0);
-        double depth=2.8*u;
-        double skew=1.15*u;
-        double cx=w/2.0-2*u;
+        double u=Math.min(W/52.0,H/62.0);
+        double cx=W/2.0;
+        double top=H*.055;
+        double depth=3.0*u;
+        double slant=1.15*u;
         double head=8*u;
         double bodyW=8*u, bodyH=12*u;
-        double limbW=(slim?3:4)*u, limbH=12*u;
-        double top=h*.07;
-        double bodyY=top+head+1.8*u;
+        double armW=(slim?3:4)*u, armH=12*u;
+        double legW=4*u, legH=12*u;
+        double bodyX=cx-bodyW/2.0;
+        double bodyY=top+head+2*u;
         double legY=bodyY+bodyH;
 
-        // Back-to-front layering makes the right-facing pose read clearly.
-        cuboid(g, 16,20,4,12, 20,16,8,4, cx+bodyW,bodyY, depth, bodyH, skew);
-        cuboid(g, 0,20,4,12, 4,16,4,4, cx-limbW-1.0*u,legY, depth*.82,limbH, skew);
-        cuboid(g, 16,52,4,12, 20,48,4,4, cx+0.3*u,legY, depth*.82,limbH, skew);
-        cuboid(g, 40,20,4,12, 44,16,4,4, cx-limbW-1.1*u,bodyY+.3*u, depth*.72,limbH, skew);
-        cuboid(g, 40,52,4,12, 44,48,4,4, cx+bodyW+.1*u,bodyY, depth*.72,limbH, skew);
-        cuboid(g, 16,8,8,8, 8,0,8,8, cx,top,depth*1.18,head,skew*1.1);
+        // Legs.
+        cuboid(g,20,52,4,12,20,48,4,4, bodyX+bodyW/2+0.3*u,legY,legW,legH,depth*.72,slant);
+        cuboid(g,4,20,4,12,4,16,4,4, bodyX+0.2*u,legY,legW,legH,depth*.72,slant);
+        // Arms.
+        if(slim){
+            cuboid(g,36,52,3,12,36,48,3,4, bodyX-armW-1.2*u,bodyY+.2*u,armW,armH,depth*.70,slant);
+            cuboid(g,44,20,3,12,44,16,3,4, bodyX+bodyW+1.2*u,bodyY,armW,armH,depth*.70,slant);
+        }else{
+            cuboid(g,36,52,4,12,36,48,4,4, bodyX-armW-1.2*u,bodyY+.2*u,armW,armH,depth*.70,slant);
+            cuboid(g,44,20,4,12,44,16,4,4, bodyX+bodyW+1.2*u,bodyY,armW,armH,depth*.70,slant);
+        }
+        // Body.
+        cuboid(g,20,20,8,12,20,16,8,4,bodyX,bodyY,bodyW,bodyH,depth,slant);
+        // Head on top, visibly turned toward the right.
+        cuboid(g,16,8,8,8,8,0,8,8,cx-head/2,top,head,head,depth*1.2,slant*1.15);
 
-        // A subtle ground glow anchors the avatar without adding a card/background.
-        g.setFill(Color.rgb(60,120,255,0.08));
-        g.fillOval(cx-16*u,h*.91,32*u,2.5*u);
+        g.setFill(Color.rgb(70,130,255,.07));
+        g.fillOval(cx-16*u,H*.895,32*u,2.2*u);
     }
 
-    private void cuboid(GraphicsContext g, int sideX,int sideY,int sideW,int sideH,
-                         int topX,int topY,int topW,int topH,
-                         double x,double y,double d,double height,double skew) {
-        int frontX,frontY,frontW,frontH;
-        if (sideW==4 && sideH==12 && topW==4) {
-            // The caller's top/side coordinates identify arms or legs; infer front from the paired texture block.
-            frontX = (sideX==40?44:(sideX==0?4:(sideX==16?20:(sideX==16?20:36))));
-            if(sideX==40 && sideY==52) frontX=36;
-            if(sideX==16 && sideY==20) frontX=4;
-            frontY=sideY; frontW=4; frontH=12;
-        } else { frontX=20; frontY=20; frontW=8; frontH=12; }
-        if(topW==8 && topH==8){ frontX=8; frontY=8; frontW=8; frontH=8; }
-
-        // right side
-        drawFace(g,sideX,sideY,sideW,sideH,x+frontW*0.0/1.0*uScale(frontW),y,d,skew,d,height);
-        // top
-        drawFace(g,topX,topY,topW,topH,x,y,d,-skew,d*.72,0);
-        // front
-        drawFace(g,frontX,frontY,frontW,frontH,x,y,frontW*uScale(frontW),0,0,height);
+    private void cuboid(GraphicsContext g,int sideX,int sideY,int sideW,int sideH,
+                        int topX,int topY,int topW,int topH,double x,double y,
+                        double w,double h,double d,double slant){
+        // Right side recedes behind the front face, creating the three-quarter turn.
+        drawFace(g,sideX,sideY,sideW,sideH,x+w,y,d,-slant,d,h);
+        // Top plane recedes up/right.
+        drawFace(g,topX,topY,topW,topH,x,y,w*.0,-slant,w,0);
+        // Front face is kept perfectly pixel-sharp.
+        int fx,fy,fw,fh;
+        if(topW==8&&topH==8){fx=8;fy=8;fw=8;fh=8;}
+        else if(w>5){fx=20;fy=20;fw=8;fh=12;}
+        else if(sideX==36){fx=36;fy=52;fw=sideW;fh=sideH;}
+        else if(sideX==44){fx=44;fy=20;fw=sideW;fh=sideH;}
+        else if(sideX==4){fx=4;fy=20;fw=4;fh=12;}
+        else {fx=20;fy=52;fw=4;fh=12;}
+        drawFace(g,fx,fy,fw,fh,x,y,w,0,0,h);
     }
-
-    private double uScale(int pixels){ return pixels==8 ? 1.0 : 1.0; }
 
     private void drawFace(GraphicsContext g,int sx,int sy,int sw,int sh,double x,double y,
                            double ux,double uy,double vx,double vy){
@@ -107,15 +105,11 @@ final class SkinRenderer extends Canvas {
         g.restore();
     }
 
-    private void drawPlaceholderModel(GraphicsContext g,double w,double h){
-        double u=Math.min(w/52.0,h/62.0), x=w/2.0-4*u, top=h*.07;
-        g.setFill(Color.web("#151a23")); g.fillRect(x,top,8*u,8*u);
-        g.setFill(Color.web("#242b38")); g.fillRect(x,top+10*u,8*u,12*u);
-        g.fillRect(x-4*u,top+10*u,4*u,12*u); g.fillRect(x+8*u,top+10*u,4*u,12*u);
-        g.fillRect(x,top+22*u,4*u,12*u); g.fillRect(x+4*u,top+22*u,4*u,12*u);
-    }
-
-    private static final class PlatformBridge {
-        static void run(Runnable action){ javafx.application.Platform.runLater(action); }
+    private void drawPlaceholder(GraphicsContext g,double W,double H){
+        double u=Math.min(W/52.0,H/62.0),x=W/2-4*u,t=H*.055;
+        g.setFill(Color.web("#151a23"));g.fillRect(x,t,8*u,8*u);
+        g.setFill(Color.web("#242b38"));g.fillRect(x,t+10*u,8*u,12*u);
+        g.fillRect(x-4*u,t+10*u,4*u,12*u);g.fillRect(x+8*u,t+10*u,4*u,12*u);
+        g.fillRect(x,t+22*u,4*u,12*u);g.fillRect(x+4*u,t+22*u,4*u,12*u);
     }
 }
