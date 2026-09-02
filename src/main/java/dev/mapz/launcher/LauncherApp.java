@@ -3,13 +3,13 @@ package dev.mapz.launcher;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -32,9 +32,11 @@ public final class LauncherApp extends Application {
         stage.setMinWidth(1000);
         stage.setMinHeight(650);
 
-        Starfield starfield = new Starfield(DESIGN_WIDTH, DESIGN_HEIGHT);
-        StackPane root = new StackPane(starfield);
-        root.setStyle("-fx-background-color: #05070d;");
+        StackPane root = new StackPane();
+        Starfield starfield = new Starfield();
+        starfield.widthProperty().bind(root.widthProperty());
+        starfield.heightProperty().bind(root.heightProperty());
+        root.getChildren().add(starfield);
 
         BorderPane content = buildLoginView(root);
         root.getChildren().add(content);
@@ -53,17 +55,13 @@ public final class LauncherApp extends Application {
     private BorderPane buildLoginView(StackPane root) {
         Label logo = new Label("_mapz");
         logo.getStyleClass().add("logo");
-
         Label title = new Label("Welcome to _mapz");
         title.getStyleClass().add("title");
-
         Label subtitle = new Label("Sign in with your Microsoft account to continue");
         subtitle.getStyleClass().add("subtitle");
-
         Button signIn = new Button("CONTINUE WITH MICROSOFT");
         signIn.getStyleClass().add("primary-button");
         signIn.setOnAction(e -> showLauncherPreview(root));
-
         Label note = new Label("Microsoft authentication will be connected in a later build");
         note.getStyleClass().add("note");
 
@@ -74,17 +72,14 @@ public final class LauncherApp extends Application {
 
         StackPane center = new StackPane(card);
         center.setAlignment(Pos.CENTER);
-
         BorderPane layout = new BorderPane(center);
         layout.getStyleClass().add("root-content");
-        BorderPane.setAlignment(center, Pos.CENTER);
 
         Label version = new Label("_mapz launcher  •  prototype");
         version.getStyleClass().add("version");
         layout.setBottom(version);
         BorderPane.setAlignment(version, Pos.CENTER);
-        BorderPane.setMargin(version, new javafx.geometry.Insets(0, 0, 24, 0));
-
+        BorderPane.setMargin(version, new Insets(0, 0, 24, 0));
         layout.getStylesheets().add(getClass().getResource("/launcher.css").toExternalForm());
         return layout;
     }
@@ -113,10 +108,9 @@ public final class LauncherApp extends Application {
 
         VBox centerBox = new VBox(22, profile, heading, welcome);
         centerBox.setAlignment(Pos.CENTER);
-
         StackPane center = new StackPane(centerBox);
         center.setAlignment(Pos.CENTER);
-        StackPane.setMargin(centerBox, new javafx.geometry.Insets(0, 0, 110, 0));
+        StackPane.setMargin(centerBox, new Insets(0, 0, 110, 0));
 
         BorderPane layout = new BorderPane(center);
         layout.getStyleClass().add("root-content");
@@ -124,15 +118,14 @@ public final class LauncherApp extends Application {
 
         StackPane playHolder = new StackPane(play);
         playHolder.setAlignment(Pos.CENTER);
-        playHolder.setMaxHeight(100);
-        BorderPane.setMargin(playHolder, new javafx.geometry.Insets(0, 0, 35, 0));
+        BorderPane.setMargin(playHolder, new Insets(0, 0, 35, 0));
         layout.setBottom(playHolder);
 
         Label status = new Label("1.21.x  •  Vanilla");
         status.getStyleClass().add("version-pill");
         layout.setTop(status);
         BorderPane.setAlignment(status, Pos.TOP_RIGHT);
-        BorderPane.setMargin(status, new javafx.geometry.Insets(28, 32, 0, 0));
+        BorderPane.setMargin(status, new Insets(28, 32, 0, 0));
 
         root.getChildren().add(layout);
         layout.setOpacity(0);
@@ -154,38 +147,32 @@ public final class LauncherApp extends Application {
         Rectangle body = new Rectangle(64, 55, Color.web("#2777d8"));
         body.setTranslateY(27);
         Rectangle leftArm = new Rectangle(17, 55, Color.web("#245fa7"));
-        leftArm.setTranslateX(-42).setTranslateY(27);
+        leftArm.setTranslateX(-42);
+        leftArm.setTranslateY(27);
         Rectangle rightArm = new Rectangle(17, 55, Color.web("#245fa7"));
-        rightArm.setTranslateX(42).setTranslateY(27);
+        rightArm.setTranslateX(42);
+        rightArm.setTranslateY(27);
         Rectangle leftLeg = new Rectangle(25, 48, Color.web("#27334b"));
-        leftLeg.setTranslateX(-16).setTranslateY(76);
+        leftLeg.setTranslateX(-16);
+        leftLeg.setTranslateY(76);
         Rectangle rightLeg = new Rectangle(25, 48, Color.web("#27334b"));
-        rightLeg.setTranslateX(16).setTranslateY(76);
+        rightLeg.setTranslateX(16);
+        rightLeg.setTranslateY(76);
         avatar.getChildren().addAll(leftLeg, rightLeg, leftArm, rightArm, body, head, hair);
         return avatar;
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) { launch(args); }
 
     private static final class Starfield extends Canvas {
-        private final Star[] stars;
+        private final Star[] stars = new Star[260];
         private final Random random = new Random(1337);
         private long lastFrame;
 
-        Starfield(double width, double height) {
-            super(width, height);
-            stars = new Star[260];
-            for (int i = 0; i < stars.length; i++) stars[i] = new Star(random.nextDouble(), random.nextDouble(), random.nextDouble());
-            widthProperty().bind(((javafx.scene.Parent) getParentSafe()).widthProperty());
-            heightProperty().bind(((javafx.scene.Parent) getParentSafe()).heightProperty());
-            start();
-        }
-
-        private javafx.scene.Node getParentSafe() { return new StackPane(); }
-
-        private void start() {
+        Starfield() {
+            for (int i = 0; i < stars.length; i++) {
+                stars[i] = new Star(random.nextDouble(), random.nextDouble(), random.nextDouble());
+            }
             new AnimationTimer() {
                 @Override public void handle(long now) {
                     if (lastFrame == 0) lastFrame = now;
@@ -202,12 +189,10 @@ public final class LauncherApp extends Application {
             GraphicsContext g = getGraphicsContext2D();
             g.setFill(Color.web("#04060b"));
             g.fillRect(0, 0, w, h);
-
             g.setFill(Color.web("#111a3b", 0.42));
             g.fillOval(w * 0.25, h * 0.05, w * 0.55, h * 0.75);
             g.setFill(Color.web("#17103b", 0.28));
             g.fillOval(w * 0.50, h * 0.10, w * 0.45, h * 0.72);
-
             for (Star s : stars) {
                 s.y += dt * (0.004 + s.depth * 0.012);
                 if (s.y > 1.03) s.y = -0.03;
