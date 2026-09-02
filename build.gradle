@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'dev.space'
-version = '0.2.0'
+version = '0.3.0'
 
 java {
     toolchain {
@@ -39,7 +39,7 @@ jlink {
         imageName = 'space-launcher'
         installerName = 'space-launcher'
         installerType = 'exe'
-        appVersion = '0.2.0'
+        appVersion = '0.3.0'
         vendor = 'Space Launcher'
         description = 'Space Launcher for Minecraft: Java Edition'
         installerOptions = [
