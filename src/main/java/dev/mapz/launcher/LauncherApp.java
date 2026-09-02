@@ -28,7 +28,6 @@ public final class LauncherApp extends Application {
     @Override
     public void start(Stage stage) {
         stage.initStyle(StageStyle.UNDECORATED);
-        stage.setMaximized(true);
         stage.setMinWidth(1000);
         stage.setMinHeight(650);
 
@@ -44,6 +43,7 @@ public final class LauncherApp extends Application {
         Scene scene = new Scene(root, DESIGN_WIDTH, DESIGN_HEIGHT);
         scene.setFill(Color.web("#05070d"));
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
 
         FadeTransition intro = new FadeTransition(Duration.millis(550), root);
@@ -85,14 +85,12 @@ public final class LauncherApp extends Application {
     }
 
     private void showLauncherPreview(StackPane root) {
-        BorderPane current = (BorderPane) root.getChildren().get(1);
-        root.getChildren().remove(current);
+        if (root.getChildren().size() > 1) root.getChildren().remove(1);
 
         Label name = new Label("_mapz");
         name.getStyleClass().add("profile-name");
         Label account = new Label("Microsoft account");
         account.getStyleClass().add("profile-subtitle");
-
         StackPane skin = createDemoSkin();
         VBox profile = new VBox(6, skin, name, account);
         profile.setAlignment(Pos.CENTER);
@@ -101,7 +99,6 @@ public final class LauncherApp extends Application {
         heading.getStyleClass().add("client-title");
         Label welcome = new Label("Ready when you are.");
         welcome.getStyleClass().add("client-subtitle");
-
         Button play = new Button("PLAY");
         play.getStyleClass().add("play-button");
         play.setOnAction(e -> { });
