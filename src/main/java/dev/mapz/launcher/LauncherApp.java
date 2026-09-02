@@ -2,6 +2,8 @@ package dev.mapz.launcher;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -24,15 +26,29 @@ import java.util.Random;
 public final class LauncherApp extends Application {
     private static final double DESIGN_WIDTH = 1440;
     private static final double DESIGN_HEIGHT = 900;
+    private static final String[] QUOTES = {
+            "SPACE CLIENT #1",
+            "Did you know? SPACE CLIENT is built for Minecraft.",
+            "Your Minecraft. Your space.",
+            "Ready for launch?",
+            "Made for a cleaner way to play.",
+            "Welcome aboard, Minecraft player."
+    };
 
     private final MicrosoftAuth auth = new MicrosoftAuth();
     private Label loginStatus;
+    private Stage launcherStage;
+    private boolean fullscreen = true;
 
     @Override
     public void start(Stage stage) {
-        stage.initStyle(StageStyle.UNDECORATED);
+        launcherStage = stage;
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setTitle("Space Launcher");
         stage.setMinWidth(1000);
         stage.setMinHeight(650);
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
 
         StackPane root = new StackPane();
         Starfield starfield = new Starfield();
@@ -42,15 +58,29 @@ public final class LauncherApp extends Application {
         root.getChildren().add(buildLoginView(root));
 
         Scene scene = new Scene(root, DESIGN_WIDTH, DESIGN_HEIGHT);
-        scene.setFill(Color.web("#030508"));
+        scene.setFill(Color.web("#020305"));
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == javafx.scene.input.KeyCode.F11) {
+                toggleFullscreen();
+                event.consume();
+            }
+        });
         stage.setScene(scene);
-        stage.setMaximized(true);
+        stage.setFullScreen(true);
         stage.show();
 
-        FadeTransition intro = new FadeTransition(Duration.millis(500), root);
+        FadeTransition intro = new FadeTransition(Duration.millis(600), root);
         intro.setFromValue(0);
         intro.setToValue(1);
         intro.play();
+    }
+
+    private void toggleFullscreen() {
+        fullscreen = !fullscreen;
+        launcherStage.setFullScreen(fullscreen);
+        if (!fullscreen) {
+            launcherStage.setMaximized(true);
+        }
     }
 
     private BorderPane buildLoginView(StackPane root) {
@@ -68,23 +98,28 @@ public final class LauncherApp extends Application {
         signIn.getStyleClass().add("primary-button");
         signIn.setOnAction(e -> beginMicrosoftSignIn(signIn));
 
-        Label hint = new Label("Your Microsoft account is used only to authenticate your Minecraft profile.");
+        Label hint = new Label("Secure Microsoft authentication • Minecraft profile loaded after sign-in");
         hint.getStyleClass().add("note");
         hint.setWrapText(true);
-        hint.setMaxWidth(520);
+        hint.setMaxWidth(560);
         hint.setAlignment(Pos.CENTER);
 
-        VBox content = new VBox(20, logo, title, loginStatus, signIn, hint);
+        VBox content = new VBox(18, logo, title, loginStatus, signIn, hint);
         content.setAlignment(Pos.CENTER);
         content.getStyleClass().add("login-content");
-        content.setMaxWidth(650);
+        content.setMaxWidth(680);
 
         StackPane center = new StackPane(content);
         center.setAlignment(Pos.CENTER);
         BorderPane layout = new BorderPane(center);
         layout.getStyleClass().add("root-content");
 
-        Label version = new Label("SPACE LAUNCHER  •  0.2");
+        QuoteTicker quotes = new QuoteTicker();
+        root.getChildren().add(quotes);
+        StackPane.setAlignment(quotes, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(quotes, new Insets(0, 0, 76, 0));
+
+        Label version = new Label("SPACE LAUNCHER  •  0.3");
         version.getStyleClass().add("version");
         layout.setBottom(version);
         BorderPane.setAlignment(version, Pos.CENTER);
@@ -95,13 +130,14 @@ public final class LauncherApp extends Application {
 
     private void beginMicrosoftSignIn(Button signIn) {
         signIn.setDisable(true);
+        signIn.getStyleClass().add("loading");
         loginStatus.setText("Opening Microsoft sign-in…");
 
         auth.signIn(new MicrosoftAuth.Listener() {
             @Override
             public void onDeviceCode(String message, String url) {
                 Platform.runLater(() -> {
-                    loginStatus.setText("Microsoft opened in your browser. Finish signing in there…");
+                    loginStatus.setText("Microsoft sign-in opened in your browser. Finish signing in there…");
                     try {
                         if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(URI.create(url));
                     } catch (Exception ignored) { }
@@ -117,6 +153,7 @@ public final class LauncherApp extends Application {
             public void onError(String message) {
                 Platform.runLater(() -> {
                     signIn.setDisable(false);
+                    signIn.getStyleClass().remove("loading");
                     loginStatus.setText(message);
                 });
             }
@@ -128,7 +165,7 @@ public final class LauncherApp extends Application {
     }
 
     private void showLauncher(StackPane root, MicrosoftAuth.MinecraftProfile profile) {
-        if (root.getChildren().size() > 1) root.getChildren().remove(1);
+        if (root.getChildren().size() > 2) root.getChildren().remove(1, root.getChildren().size() - 1);
 
         Label brand = new Label("SPACE");
         brand.getStyleClass().add("brand-small");
@@ -140,10 +177,10 @@ public final class LauncherApp extends Application {
 
         Label name = new Label(profile.name());
         name.getStyleClass().add("profile-name");
-        Label account = new Label("Microsoft account  •  Minecraft: Java Edition");
+        Label account = new Label("MICROSOFT ACCOUNT  •  MINECRAFT: JAVA EDITION");
         account.getStyleClass().add("profile-subtitle");
 
-        VBox profileBox = new VBox(4, skin, name, account);
+        VBox profileBox = new VBox(3, skin, name, account);
         profileBox.setAlignment(Pos.CENTER);
 
         Button play = new Button("PLAY");
@@ -173,7 +210,7 @@ public final class LauncherApp extends Application {
 
         root.getChildren().add(layout);
         layout.setOpacity(0);
-        FadeTransition fade = new FadeTransition(Duration.millis(400), layout);
+        FadeTransition fade = new FadeTransition(Duration.millis(450), layout);
         fade.setFromValue(0);
         fade.setToValue(1);
         fade.play();
@@ -181,8 +218,48 @@ public final class LauncherApp extends Application {
 
     public static void main(String[] args) { launch(args); }
 
+    private static final class QuoteTicker extends StackPane {
+        private final Label label = new Label();
+        private int index;
+
+        QuoteTicker() {
+            label.getStyleClass().add("quote");
+            label.setText(QUOTES[0]);
+            getChildren().add(label);
+            setMouseTransparent(true);
+            setMinHeight(36);
+            setMaxHeight(36);
+
+            javafx.animation.Timeline timeline = new javafx.animation.Timeline(
+                    new javafx.animation.KeyFrame(Duration.seconds(30), e -> nextQuote()));
+            timeline.setCycleCount(javafx.animation.Animation.INDEFINITE);
+            timeline.play();
+        }
+
+        private void nextQuote() {
+            index = (index + 1) % QUOTES.length;
+            FadeTransition out = new FadeTransition(Duration.millis(350), label);
+            out.setToValue(0);
+            TranslateTransition drop = new TranslateTransition(Duration.millis(350), label);
+            drop.setToY(12);
+            ParallelTransition leave = new ParallelTransition(out, drop);
+            leave.setOnFinished(e -> {
+                label.setText(QUOTES[index]);
+                label.setTranslateY(-12);
+                FadeTransition in = new FadeTransition(Duration.millis(650), label);
+                in.setFromValue(0);
+                in.setToValue(1);
+                TranslateTransition rise = new TranslateTransition(Duration.millis(650), label);
+                rise.setFromY(-12);
+                rise.setToY(0);
+                new ParallelTransition(in, rise).play();
+            });
+            leave.play();
+        }
+    }
+
     private static final class Starfield extends javafx.scene.canvas.Canvas {
-        private final Star[] stars = new Star[300];
+        private final Star[] stars = new Star[340];
         private final Random random = new Random(1337);
         private long lastFrame;
 
