@@ -4,8 +4,8 @@ plugins {
     id 'org.beryx.jlink' version '3.1.1'
 }
 
-group = 'dev.mapz'
-version = '0.1.0'
+group = 'dev.space'
+version = '0.2.0'
 
 java {
     toolchain {
@@ -32,19 +32,19 @@ jlink {
     ]
 
     launcher {
-        name = 'mapz-launcher'
+        name = 'space-launcher'
     }
 
     jpackage {
-        imageName = 'mapz-launcher'
-        installerName = 'mapz-launcher'
+        imageName = 'space-launcher'
+        installerName = 'space-launcher'
         installerType = 'exe'
-        appVersion = '0.1.0'
-        vendor = 'mapz'
-        description = 'The _mapz Minecraft launcher'
+        appVersion = '0.2.0'
+        vendor = 'Space Launcher'
+        description = 'Space Launcher for Minecraft: Java Edition'
         installerOptions = [
             '--win-menu',
-            '--win-menu-group', 'mapz',
+            '--win-menu-group', 'Space Launcher',
             '--win-shortcut',
             '--win-shortcut-prompt'
         ]
