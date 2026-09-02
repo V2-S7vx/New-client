@@ -1,0 +1,169 @@
+.root-content, .shell, .content-area, .home-view, .simple-screen {
+    -fx-background-color: transparent;
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+}
+
+.top-bar {
+    -fx-background-color: rgba(5, 7, 11, 0.94);
+    -fx-border-color: rgba(255,255,255,0.09);
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 8px 18px;
+    -fx-pref-height: 58px;
+}
+
+.top-logo {
+    -fx-text-fill: #4d9aff;
+    -fx-font-size: 25px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 5px 0 2px;
+}
+
+.top-title {
+    -fx-text-fill: rgba(255,255,255,0.94);
+    -fx-font-size: 16px;
+    -fx-font-weight: 850;
+}
+
+.top-version {
+    -fx-text-fill: rgba(210,216,228,0.42);
+    -fx-font-size: 10px;
+    -fx-font-weight: 600;
+}
+
+.account-label {
+    -fx-text-fill: rgba(255,255,255,0.68);
+    -fx-background-color: rgba(255,255,255,0.055);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+.sidebar {
+    -fx-background-color: rgba(5,7,11,0.92);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 0 1px 0 0;
+    -fx-padding: 72px 9px 14px 9px;
+    -fx-pref-width: 64px;
+}
+
+.nav-button {
+    -fx-background-color: rgba(255,255,255,0.065);
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: rgba(255,255,255,0.045);
+    -fx-text-fill: rgba(220,226,238,0.58);
+    -fx-font-size: 19px;
+    -fx-min-width: 45px;
+    -fx-min-height: 45px;
+    -fx-pref-width: 45px;
+    -fx-pref-height: 45px;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255,255,255,0.105);
+    -fx-text-fill: rgba(255,255,255,0.9);
+}
+
+.nav-active {
+    -fx-background-color: rgba(20,128,255,0.18);
+    -fx-border-color: #1888ff;
+    -fx-text-fill: #4ba2ff;
+    -fx-effect: dropshadow(gaussian, rgba(30,130,255,0.35), 14, 0.25, 0, 0);
+}
+
+.title {
+    -fx-text-fill: white;
+    -fx-font-size: 40px;
+    -fx-font-weight: 800;
+}
+
+.subtitle {
+    -fx-text-fill: rgba(235,240,255,0.64);
+    -fx-font-size: 15px;
+}
+
+.login-content { -fx-padding: 24px; }
+
+.primary-button, .dev-button, .play-button, .play-drop {
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+
+.primary-button, .play-button {
+    -fx-background-color: linear-gradient(to bottom, #4d98ff, #176de5);
+    -fx-border-color: rgba(255,255,255,0.17);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(45,120,255,0.30), 20, 0.28, 0, 6);
+}
+
+.primary-button { -fx-padding: 15px 32px; -fx-min-width: 320px; -fx-font-size: 12px; }
+
+.dev-button {
+    -fx-background-color: rgba(255,255,255,0.045);
+    -fx-border-color: rgba(255,255,255,0.09);
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+    -fx-padding: 8px 18px;
+    -fx-font-size: 10px;
+    -fx-text-fill: rgba(235,240,255,0.58);
+}
+
+.dev-button:hover { -fx-background-color: rgba(255,255,255,0.08); }
+.primary-button:hover, .play-button:hover { -fx-background-color: linear-gradient(to bottom, #5aa1ff, #287cf0); }
+.primary-button:pressed, .dev-button:pressed, .play-button:pressed, .play-drop:pressed { -fx-translate-y: 1px; }
+
+.home-view { -fx-padding: 15px 0 0 0; }
+
+.profile-name-top {
+    -fx-text-fill: white;
+    -fx-font-family: "Consolas", "Segoe UI", sans-serif;
+    -fx-font-size: 23px;
+    -fx-font-weight: 900;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.18), 14, 0.22, 0, 2);
+}
+
+.play-button {
+    -fx-padding: 14px 82px;
+    -fx-font-family: "Consolas", "Segoe UI", sans-serif;
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 3px;
+    -fx-background-radius: 7px;
+    -fx-border-radius: 7px;
+}
+
+.play-drop {
+    -fx-background-color: rgba(30,31,38,0.92);
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-font-size: 20px;
+    -fx-text-fill: rgba(255,255,255,0.78);
+}
+
+.simple-screen-title {
+    -fx-text-fill: rgba(255,255,255,0.45);
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 3px;
+}
+
+.note, .version { -fx-text-fill: rgba(235,240,255,0.32); -fx-font-size: 10px; }
+
+.quote {
+    -fx-text-fill: rgba(255,255,255,0.35);
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-letter-spacing: 1px;
+}
